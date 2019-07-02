@@ -150,8 +150,7 @@
     
     BOOL isOutgoing = self.isOutgoing;
     UIEdgeInsets bubbleMargin = self.bubbleViewMargin;
-    CGFloat prefrredMaxBubbleWidth = ceil(self.width * 0.68);
-    CGFloat bubbleViewWidth = prefrredMaxBubbleWidth;
+    CGFloat bubbleViewWidth = [self prefrredMaxBubbleWidth];
     
     UIEdgeInsets textMargin = isOutgoing ? UIEdgeInsetsMake(10, 10, 10, 15) : UIEdgeInsetsMake(10, 15, 10, 10);
     CGFloat textLabelWidth = bubbleViewWidth - textMargin.left - textMargin.right;
@@ -176,10 +175,21 @@
     
     bubbleViewWidth = textLabelWidth + textMargin.left + textMargin.right;
     CGFloat bubbleViewHeight = textLabelHeight + textMargin.top + textMargin.bottom;
-    self.bubbleViewFrame = isOutgoing ? CGRectMake(self.width - bubbleMargin.right - bubbleViewWidth, bubbleMargin.top, bubbleViewWidth, bubbleViewHeight) : CGRectMake(bubbleMargin.left, bubbleMargin.top, bubbleViewWidth, bubbleViewHeight);
+    CGFloat bubbleViewTop = bubbleMargin.top + CGRectGetMaxY(self.nicknameViewFrame) + self.nicknameViewMargin.bottom;
+    if (isOutgoing) {
+        self.bubbleViewFrame = CGRectMake(self.width - bubbleMargin.right - bubbleViewWidth,
+                                          bubbleViewTop,
+                                          bubbleViewWidth,
+                                          bubbleViewHeight);
+    } else {
+        self.bubbleViewFrame = CGRectMake(bubbleMargin.left,
+                                          bubbleViewTop,
+                                          bubbleViewWidth,
+                                          bubbleViewHeight);
+    }
     self.bubbleImageViewFrame = CGRectMake(0, 0, bubbleViewWidth, bubbleViewHeight);
     
-    self.height = bubbleViewHeight + bubbleMargin.top + bubbleMargin.bottom;
+    self.height = bubbleViewHeight + bubbleViewTop + bubbleMargin.bottom;
 }
 
 @end

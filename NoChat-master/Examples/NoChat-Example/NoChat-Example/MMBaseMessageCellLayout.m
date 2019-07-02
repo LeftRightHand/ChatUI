@@ -26,13 +26,12 @@
 #import "MMBaseMessageCellLayout.h"
 #import "NOCMessage.h"
 
-#define CellBubbleViewInsetsLeft 52
-#define CellBubbleViewInsetsRight 52
 #define CellBubbleViewInsetsTop 0
 #define CellBubbleViewInsetsBottom 8
-#define CellNicknameHeight 25
+#define CellNicknameHeight 20
 #define CellAvatarSize 40
 #define CellMargin 8
+#define CellAvatarMargin 3
 
 @implementation MMBaseMessageCellLayout
 
@@ -44,13 +43,19 @@
         _chatItem = chatItem;
         _width = width;
         _bubbleViewMargin = UIEdgeInsetsMake(CellBubbleViewInsetsTop,
-                                             CellBubbleViewInsetsLeft,
+                                             CellAvatarSize + CellMargin,
                                              CellBubbleViewInsetsBottom,
-                                             CellBubbleViewInsetsRight);
+                                             CellAvatarSize + CellMargin);
+        _nicknameViewMargin = UIEdgeInsetsMake(CellAvatarMargin,
+                                               CellMargin,
+                                               self.isDisplayNickname ? CellAvatarMargin : 0 ,
+                                               CellMargin);
         _avatarSize = CellAvatarSize;
         _nicknameSize.height = self.isDisplayNickname ? CellNicknameHeight : 0;
-        _nicknameSize.width = self.isDisplayNickname ? width - CellMargin * 2 : 0;
+        _nicknameSize.width = self.isDisplayNickname ? width - CellAvatarSize - CellMargin * 3 : 0;
+        _nicknameOrigin.x = self.isOutgoing ? CellMargin : _bubbleViewMargin.left + CellMargin;
         _avatarImage = self.isOutgoing ? [MMBaseMessageCellLayout outgoingAvatarImage] : [MMBaseMessageCellLayout incomingAvatarImage];
+ 
     }
     return self;
 }
@@ -59,9 +64,45 @@
 {
     CGFloat avatarWidth = self.avatarSize;
     CGFloat avatarHeight = self.avatarSize;
-    self.nicknameViewFrame = self.isDisplayNickname ? CGRectMake(CellMargin, CellMargin, self.nicknameSize.width, self.nicknameSize.height) : CGRectMake(0, 0, self.nicknameSize.width, self.nicknameSize.height);
-    CGFloat avatarY = self.isDisplayNickname ? CGRectGetMaxY(self.nicknameViewFrame) : 0;
-    self.avatarImageViewFrame = self.isOutgoing ? CGRectMake(self.width - CellMargin - avatarWidth, avatarY, avatarWidth, avatarHeight) : CGRectMake(CellMargin, avatarY, avatarWidth, avatarHeight);
+   
+    
+    if (self.isOutgoing) {
+        self.avatarImageViewFrame = CGRectMake(self.width - CellMargin - avatarWidth,
+                                               0,
+                                               avatarWidth,
+                                               avatarHeight);
+    } else {
+        self.avatarImageViewFrame = CGRectMake(CellMargin,
+                                               0,
+                                               avatarWidth,
+                                               avatarHeight);
+    }
+    
+    if (self.isDisplayNickname) {
+        self.nicknameViewFrame = CGRectMake(self.nicknameOrigin.x,
+                                            0,
+                                            self.nicknameSize.width,
+                                            self.nicknameSize.height);
+    } else {
+         self.nicknameViewFrame = CGRectMake(0,
+                                             0,
+                                             self.nicknameSize.width,
+                                             self.nicknameSize.height);
+    }
+    
+    CGRect avatarImageViewRounded = CGRectZero;
+    avatarImageViewRounded.size = self.avatarImageViewFrame.size;
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:avatarImageViewRounded
+                                                   byRoundingCorners:UIRectCornerAllCorners
+                                                         cornerRadii:self.avatarImageViewFrame.size];
+    CAShapeLayer *maskLayer = [[CAShapeLayer alloc]init];
+    maskLayer.frame = avatarImageViewRounded;
+    maskLayer.path = maskPath.CGPath;
+    self.avatarMaskLayer = maskLayer;
+}
+
+- (CGFloat)prefrredMaxBubbleWidth {
+    return ceil(self.width * 0.68);
 }
 
 - (NOCMessage *)message

@@ -32,6 +32,8 @@
 
 @property (nonatomic, weak) id<NOCMessageCellDelegate> delegate;
 
+@property (nonatomic, strong, readonly) NSIndexPath *indexPath;
+
 @property (nonatomic, strong) UILabel *nickNameLabel;
 @property (nonatomic, strong) UIView *bubbleView;
 @property (nonatomic, strong) UIImageView *avatarImageView;
@@ -41,4 +43,7 @@
 
 @property (nonatomic, assign, getter=isHighlight) BOOL hightlight;
 
+- (void)setLayoutActivityIndicator;
+- (void)setupActivityIndicatorHidden;
+- (void)setCellForItemAtIndexPath:(NSIndexPath *)indexPath;
 @end

@@ -40,15 +40,19 @@
 @property (nonatomic, assign, readonly) BOOL isActivityIndicatorHidden;
 
 @property (nonatomic, assign) UIEdgeInsets bubbleViewMargin;
+@property (nonatomic, assign) UIEdgeInsets nicknameViewMargin;
+@property (nonatomic, assign) CGPoint nicknameOrigin;
 @property (nonatomic, assign) CGSize nicknameSize;
 @property (nonatomic, assign) CGRect nicknameViewFrame;
 @property (nonatomic, assign) CGRect bubbleViewFrame;
 @property (nonatomic, assign) CGFloat avatarSize;
 @property (nonatomic, assign) CGRect avatarImageViewFrame;
+@property (nonatomic, strong) CAShapeLayer *avatarMaskLayer;
 @property (nonatomic, strong) UIImage *avatarImage;
 
 - (instancetype)initWithChatItem:(id<NOCChatItem>)chatItem cellWidth:(CGFloat)width;
 - (void)calculateLayout;
+- (CGFloat)prefrredMaxBubbleWidth;
 @end
 
 @interface MMBaseMessageCellLayout (MMStyle)

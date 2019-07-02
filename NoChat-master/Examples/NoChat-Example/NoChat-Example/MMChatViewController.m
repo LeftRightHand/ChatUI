@@ -31,12 +31,15 @@
 #import "MMDateMessageCellLayout.h"
 #import "MMSystemMessageCell.h"
 #import "MMSystemMessageCellLayout.h"
+#import "MMImageMessageCell.h"
+#import "MMImageMessageCellLayout.h"
 
 #import "MMChatInputTextPanel.h"
 
 #import "NOCUser.h"
 #import "NOCChat.h"
 #import "NOCMessage.h"
+#import "NOCImageMessage.h"
 
 #import "NOCMessageManager.h"
 
@@ -67,6 +70,8 @@
         return [MMDateMessageCellLayout class];
     } else if ([type isEqualToString:@"System"]) {
         return [MMSystemMessageCellLayout class];
+    } else if ([type isEqualToString:@"Image"]) {
+        return [MMImageMessageCellLayout class];
     } else {
         return nil;
     }
@@ -79,9 +84,14 @@
 
 - (void)registerChatItemCells
 {
-    [self.collectionView registerClass:[MMTextMessageCell class] forCellWithReuseIdentifier:[MMTextMessageCell reuseIdentifier]];
-    [self.collectionView registerClass:[MMDateMessageCell class] forCellWithReuseIdentifier:[MMDateMessageCell reuseIdentifier]];
-    [self.collectionView registerClass:[MMSystemMessageCell class] forCellWithReuseIdentifier:[MMSystemMessageCell reuseIdentifier]];
+    [self.collectionView registerClass:[MMImageMessageCell class]
+            forCellWithReuseIdentifier:[MMImageMessageCell reuseIdentifier]];
+    [self.collectionView registerClass:[MMTextMessageCell class]
+            forCellWithReuseIdentifier:[MMTextMessageCell reuseIdentifier]];
+    [self.collectionView registerClass:[MMDateMessageCell class]
+            forCellWithReuseIdentifier:[MMDateMessageCell reuseIdentifier]];
+    [self.collectionView registerClass:[MMSystemMessageCell class]
+            forCellWithReuseIdentifier:[MMSystemMessageCell reuseIdentifier]];
 }
 
 - (instancetype)initWithChat:(NOCChat *)chat
@@ -175,9 +185,10 @@
   
 }
 
-- (void)chatItemCell:(NOCChatItemCell *)cell {
+- (void)chatItemCell:(NOCChatItemCell *)cell cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     if ([cell isKindOfClass:MMBaseMessageCell.class]) {
         [(MMBaseMessageCell *)cell setDelegate:self];
+        [(MMBaseMessageCell *)cell setCellForItemAtIndexPath:indexPath];
     }
 }
 
@@ -321,15 +332,38 @@
     NSUInteger num = arc4random_uniform(count);
     NSMutableArray *messages = [NSMutableArray array];
     for (NSUInteger i = 0; i < num; i++) {
-        NOCMessage *message = [[NOCMessage alloc] init];
-        message.text = msgs[i];
-        message.senderId = @"3330";
-        message.deliveryStatus = NOCMessageDeliveryStatusRead;
-        message.outgoing = NO;
-        message.displayNickname = YES;
-        [messages addObject:message];
+        
+        int i = arc4random() % 2;
+        int text = arc4random() % 2;
+        int img = arc4random() % 2;
+        int j = arc4random() % 2;
+        
+        if (text) {
+            NOCMessage *message = [[NOCMessage alloc] init];
+            message.text = msgs[i];
+            message.senderId = @"3330";
+            message.deliveryStatus = NOCMessageDeliveryStatusRead;
+            message.outgoing = i ? YES : NO;
+            message.displayNickname = YES;
+            message.nickname = @"bete si";
+            [messages addObject:message];
+        } else {
+            NOCImageMessage *message = [[NOCImageMessage alloc] init];
+            message.senderId = @"3330";
+            message.deliveryStatus = j ? NOCMessageDeliveryStatusDelivering  : NOCMessageDeliveryStatusRead;
+            message.outgoing = i ? YES : NO;
+            message.displayNickname = YES;
+            message.nickname = @"bete si";
+            NSArray *imgs = @[@"timg", @"ut"];
+            message.image = j ? nil : [UIImage imageNamed:imgs[img]];
+            [messages addObject:message];
+        }
+        
     }
     [self addMessages:messages scrollToBottom:self.isInCurrentBottom animated:YES];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self findImageMessage:nil];
+    });
 }
 
 - (void)addMessages:(NSArray *)messages scrollToBottom:(BOOL)scrollToBottom animated:(BOOL)animated
@@ -363,10 +397,51 @@
         if ([message.msgId isEqualToString:layout.message.msgId] &&
             layout.message.deliveryStatus == NOCMessageDeliveryStatusDelivering) {
             layout.message.deliveryStatus = NOCMessageDeliveryStatusDelivered;
-            [self updateLayoutAtIndex:idx toLayout:layout animated:YES];
+//            [self updateLayoutAtIndex:idx toLayout:layout animated:YES];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+            UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+            [(MMBaseMessageCell *)cell setupActivityIndicatorHidden];
             *stop = YES;
         }
     }];
+    
+//    NSArray * visibleCells = self.collectionView.visibleCells;
+//    for (MMBaseMessageCell *cell in visibleCells) {
+//        MMBaseMessageCellLayout *layout = self.layouts[cell.tag];
+//        if ([message.msgId isEqualToString:layout.message.msgId] &&
+//            layout.message.deliveryStatus == NOCMessageDeliveryStatusDelivering) {
+//            layout.message.deliveryStatus = NOCMessageDeliveryStatusDelivered;
+//
+//        }
+//    }
+    
+}
+
+- (void)findImageMessage:(NOCImageMessage *)message {
+    [self.layouts enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(id<NOCChatItemCellLayout>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([obj isKindOfClass:MMImageMessageCellLayout.class]) {
+            MMImageMessageCellLayout *layout = obj;
+            NOCImageMessage *imgMessage = (NOCImageMessage *)layout.message;
+            if (!imgMessage.image) {
+//                *stop = YES;
+                if (layout.message.deliveryStatus == NOCMessageDeliveryStatusDelivering) {
+                    layout.message.deliveryStatus = NOCMessageDeliveryStatusDelivered;
+                }
+                imgMessage.image = [UIImage imageNamed:@"timg"];
+                MMImageMessageCellLayout * layout = [self createLayoutWithItem:imgMessage];
+                [self updateLayoutAtIndex:idx toLayout:layout animated:NO];
+            }
+        }
+    }];
+}
+
+- (void)updateImageLayout:(MMBaseMessageCellLayout *)layout index:(NSInteger)index {
+    NOCImageMessage *message = (NOCImageMessage *)layout.message;
+    if (!message.image && [layout isKindOfClass:MMImageMessageCellLayout.class]) {
+        message.image = [UIImage imageNamed:@"ut"];
+        layout = [self createLayoutWithItem:message];
+        [self updateLayoutAtIndex:index toLayout:layout animated:YES];
+    }
 }
 
 @end

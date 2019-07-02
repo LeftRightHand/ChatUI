@@ -63,7 +63,7 @@
         [self.bubbleView addSubview:_textLabel];
         
         _longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longGesturePress:)];
-        [self addGestureRecognizer:_longPressGesture];
+        [self.bubbleView addGestureRecognizer:_longPressGesture];
     }
     return self;
 }
@@ -79,7 +79,9 @@
     
     self.textLabel.frame = cellLayout.textLabelFrame;
     self.textLabel.textLayout = cellLayout.textLayout;
+
 }
+
 #pragma mark - Action
 - (void)longGesturePress:(UIGestureRecognizer *)gestureRecognizer
 {
@@ -89,7 +91,6 @@
             [self.delegate onLongPressCell:self.message
                                     inView:self.bubbleView];
         }
-        
     }
 }
 

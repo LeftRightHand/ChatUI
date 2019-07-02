@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8156923B22C4C75C003665DA /* MMImageMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8156923A22C4C75C003665DA /* MMImageMessageCell.m */; };
+		8156923E22C4CCF9003665DA /* MMImageMessageCellLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8156923D22C4CCF9003665DA /* MMImageMessageCellLayout.m */; };
+		8157FCE222C5A194002DB995 /* NOCImageMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8157FCE122C5A194002DB995 /* NOCImageMessage.m */; };
 		84420431222536320088F2F6 /* EmotionEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 8442042F222536320088F2F6 /* EmotionEntity.m */; };
 		E018A5301E49B3BE0034B376 /* sent.caf in Resources */ = {isa = PBXBuildFile; fileRef = E018A52F1E49B3BE0034B376 /* sent.caf */; };
 		E018A5331E49B3FD0034B376 /* NOCSoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E018A5321E49B3FD0034B376 /* NOCSoundManager.m */; };
@@ -65,6 +68,12 @@
 
 /* Begin PBXFileReference section */
 		5F4683890547AED21B7FE846 /* Pods-NoChat-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoChat-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NoChat-Example/Pods-NoChat-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		8156923922C4C75C003665DA /* MMImageMessageCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMImageMessageCell.h; sourceTree = "<group>"; };
+		8156923A22C4C75C003665DA /* MMImageMessageCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMImageMessageCell.m; sourceTree = "<group>"; };
+		8156923C22C4CCF9003665DA /* MMImageMessageCellLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MMImageMessageCellLayout.h; sourceTree = "<group>"; };
+		8156923D22C4CCF9003665DA /* MMImageMessageCellLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMImageMessageCellLayout.m; sourceTree = "<group>"; };
+		8157FCE022C5A194002DB995 /* NOCImageMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NOCImageMessage.h; sourceTree = "<group>"; };
+		8157FCE122C5A194002DB995 /* NOCImageMessage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NOCImageMessage.m; sourceTree = "<group>"; };
 		815AFDB52296B503009825E5 /* NOCMessageCellProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NOCMessageCellProtocol.h; sourceTree = "<group>"; };
 		8442042F222536320088F2F6 /* EmotionEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmotionEntity.m; sourceTree = "<group>"; };
 		84420430222536320088F2F6 /* EmotionEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmotionEntity.h; sourceTree = "<group>"; };
@@ -173,6 +182,17 @@
 				87D54D4AE83B6A71EC459EBB /* Pods-NoChat-Example.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		8156923822C4C71E003665DA /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				8156923922C4C75C003665DA /* MMImageMessageCell.h */,
+				8156923A22C4C75C003665DA /* MMImageMessageCell.m */,
+				8156923C22C4CCF9003665DA /* MMImageMessageCellLayout.h */,
+				8156923D22C4CCF9003665DA /* MMImageMessageCellLayout.m */,
+			);
+			name = Image;
 			sourceTree = "<group>";
 		};
 		815AFDB42296B4C7009825E5 /* Protocols */ = {
@@ -394,6 +414,8 @@
 				E06574011E3840F300D2FBB2 /* NOCChat.m */,
 				E0C29E471E3313C2001A793F /* NOCMessage.h */,
 				E0C29E481E3313C2001A793F /* NOCMessage.m */,
+				8157FCE022C5A194002DB995 /* NOCImageMessage.h */,
+				8157FCE122C5A194002DB995 /* NOCImageMessage.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -416,6 +438,7 @@
 				E06574441E39E73300D2FBB2 /* System */,
 				E0C29E731E345B50001A793F /* Base */,
 				E0C29E741E345B55001A793F /* Text */,
+				8156923822C4C71E003665DA /* Image */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -599,6 +622,7 @@
 				E065740C1E3845D500D2FBB2 /* NOCUser.m in Sources */,
 				E09B248B1E0E322E00E9345B /* NOCAppDelegate.m in Sources */,
 				E06574541E39E99D00D2FBB2 /* TGDateMessageCellLayout.m in Sources */,
+				8156923B22C4C75C003665DA /* MMImageMessageCell.m in Sources */,
 				E065744B1E39E96800D2FBB2 /* TGDateMessageCell.m in Sources */,
 				E018A5331E49B3FD0034B376 /* NOCSoundManager.m in Sources */,
 				E02351541E37462500AE57D2 /* TGAvatarButton.m in Sources */,
@@ -613,9 +637,11 @@
 				E09B24881E0E322E00E9345B /* main.m in Sources */,
 				E0C29E801E345BDC001A793F /* MMTextMessageCell.m in Sources */,
 				E09B24BE1E0E335600E9345B /* NOCChatsViewController.m in Sources */,
+				8156923E22C4CCF9003665DA /* MMImageMessageCellLayout.m in Sources */,
 				E0C29E5A1E33AFD4001A793F /* UIFont+NoChat.m in Sources */,
 				E0C29E6F1E33BEDF001A793F /* TGBaseMessageCellLayout.m in Sources */,
 				E0C29E641E33BA59001A793F /* TGTextMessageCell.m in Sources */,
+				8157FCE222C5A194002DB995 /* NOCImageMessage.m in Sources */,
 				E0C29E7D1E345BC3001A793F /* MMTextMessageCellLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

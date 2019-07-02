@@ -28,20 +28,23 @@
 
 typedef NS_ENUM(NSUInteger, NOCMessageDeliveryStatus) {
     NOCMessageDeliveryStatusIdle = 0,
-    NOCMessageDeliveryStatusDelivering = 1,
-    NOCMessageDeliveryStatusDelivered = 2,
-    NOCMessageDeliveryStatusFailure = 3,
-    NOCMessageDeliveryStatusRead = 4
+    NOCMessageDeliveryStatusDelivering,
+    NOCMessageDeliveryStatusDownloading,
+    NOCMessageDeliveryStatusDelivered,
+    NOCMessageDeliveryStatusFailure,
+    NOCMessageDeliveryStatusRead
 };
 
 @interface NOCMessage : NSObject <NOCChatItem>
+
+@property (nonatomic, strong) NSDate *date;
 
 @property (nonatomic, strong) NSString *msgId;
 @property (nonatomic, strong) NSString *type;
 
 @property (nonatomic, strong) NSString *senderId;
-@property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *nickname;
 
 @property (nonatomic, assign, getter=isOutgoing) BOOL outgoing;
 @property (nonatomic, assign, getter=isDisplayNickname) BOOL displayNickname;

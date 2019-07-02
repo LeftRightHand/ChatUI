@@ -26,8 +26,11 @@
 #import "MMBaseMessageCell.h"
 #import "MMBaseMessageCellLayout.h"
 
+#import "NOCMessage.h"
 
 @implementation MMBaseMessageCell
+
+@synthesize indexPath = _indexPath;
 
 + (NSString *)reuseIdentifier
 {
@@ -45,6 +48,8 @@
         [self.itemView addSubview:_bubbleView];
         
         _nickNameLabel = [[UILabel alloc] init];
+        _nickNameLabel.font = [UIFont systemFontOfSize:13];
+        _nickNameLabel.textColor = [UIColor darkGrayColor];
         [self.itemView addSubview:_nickNameLabel];
         
         _traningActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0,0,20,20)];
@@ -52,6 +57,10 @@
         [self.itemView addSubview:_traningActivityIndicator];
     }
     return self;
+}
+
+- (void)setCellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    _indexPath = indexPath;
 }
 
 - (void)setLayout:(id<NOCChatItemCellLayout>)layout
@@ -63,6 +72,7 @@
     self.bubbleView.frame = cellLayout.bubbleViewFrame;
     self.avatarImageView.frame = cellLayout.avatarImageViewFrame;
     self.avatarImageView.image = cellLayout.avatarImage;
+    self.avatarImageView.layer.mask = cellLayout.avatarMaskLayer;
     
     if (cellLayout.isActivityIndicatorHidden) {
         [self.traningActivityIndicator stopAnimating];
@@ -73,6 +83,16 @@
     [self setLayoutActivityIndicator];
     
     self.message = cellLayout.message;
+    
+    if (cellLayout.isDisplayNickname) {
+        self.nickNameLabel.text = cellLayout.message.nickname;
+        self.nickNameLabel.textAlignment = cellLayout.isOutgoing ? NSTextAlignmentRight : NSTextAlignmentLeft;
+    }
+    
+}
+
+- (void)setupActivityIndicatorHidden {
+    [self.traningActivityIndicator stopAnimating];
 }
 
 - (void)setLayoutActivityIndicator
